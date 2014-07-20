@@ -3,9 +3,13 @@
 mkdir -p autotools
 
 aclocal
-libtoolize
+if [ "$(uname)" == "Darwin" ]; then
+	glibtoolize
+else
+	libtoolize
+fi
 autoheader
-automake -a 
+automake -a
 autoconf
 automake -a
 

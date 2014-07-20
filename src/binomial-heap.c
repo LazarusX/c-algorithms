@@ -20,7 +20,11 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include <stdlib.h>
 #include <string.h>
+#ifdef __APPLE__
+#include <limits.h>
+#else
 #include <values.h>
+#endif
 
 #include "binomial-heap.h"
 
