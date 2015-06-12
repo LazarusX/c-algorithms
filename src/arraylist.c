@@ -2,19 +2,19 @@
 
 Copyright (c) 2005-2008, Simon Howard
 
-Permission to use, copy, modify, and/or distribute this software 
-for any purpose with or without fee is hereby granted, provided 
-that the above copyright notice and this permission notice appear 
-in all copies. 
+Permission to use, copy, modify, and/or distribute this software
+for any purpose with or without fee is hereby granted, provided
+that the above copyright notice and this permission notice appear
+in all copies.
 
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL 
-WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE 
-AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR 
-CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM 
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, 
-NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN      
-CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. 
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  */
 
@@ -36,12 +36,12 @@ ArrayList *arraylist_new(unsigned int length)
 	ArrayList *new_arraylist;
 
 	/* If the length is not specified, use a sensible default */
-	
+
 	if (length <= 0) {
 		length = 16;
 	}
-	
-	/* Allocate the new ArrayList and fill in the fields.  There are 
+
+	/* Allocate the new ArrayList and fill in the fields.  There are
 	 * initially no entries. */
 
 	new_arraylist = (ArrayList *) malloc(sizeof(ArrayList));
@@ -49,7 +49,7 @@ ArrayList *arraylist_new(unsigned int length)
 	if (new_arraylist == NULL) {
 		return NULL;
 	}
-	
+
 	new_arraylist->_alloced = length;
 	new_arraylist->length = 0;
 
@@ -83,7 +83,7 @@ static int arraylist_enlarge(ArrayList *arraylist)
 	/* Double the allocated size */
 
 	newsize = arraylist->_alloced * 2;
-	
+
 	/* Reallocate the array to the new size */
 
 	data = realloc(arraylist->data, sizeof(ArrayListValue) * newsize);
@@ -103,12 +103,12 @@ int arraylist_insert(ArrayList *arraylist, unsigned int index,
 {
 	/* Sanity check the index */
 
-	if (index < 0 || index > arraylist->length) {
+	if (index > arraylist->length) {
 		return 0;
 	}
 
 	/* Increase the size if necessary */
-	
+
 	if (arraylist->length + 1 > arraylist->_alloced) {
 		if (!arraylist_enlarge(arraylist)) {
 			return 0;
@@ -118,7 +118,7 @@ int arraylist_insert(ArrayList *arraylist, unsigned int index,
 	/* Move the contents of the array forward from the index
 	 * onwards */
 
-	memmove(&arraylist->data[index + 1], 
+	memmove(&arraylist->data[index + 1],
 	        &arraylist->data[index],
 	        (arraylist->length - index) * sizeof(ArrayListValue));
 
@@ -145,7 +145,7 @@ void arraylist_remove_range(ArrayList *arraylist, unsigned int index,
 {
 	/* Check this is a valid range */
 
-	if (index < 0 || length < 0 || index + length > arraylist->length) {
+	if (index > arraylist->length || index + length > arraylist->length) {
 		return;
 	}
 
@@ -153,7 +153,8 @@ void arraylist_remove_range(ArrayList *arraylist, unsigned int index,
 
 	memmove(&arraylist->data[index],
 	        &arraylist->data[index + length],
-	        (arraylist->length - (index + length)) * sizeof(ArrayListValue));
+	        (arraylist->length - (index + length))
+	            * sizeof(ArrayListValue));
 
 	/* Decrease the counter */
 
@@ -165,7 +166,7 @@ void arraylist_remove(ArrayList *arraylist, unsigned int index)
 	arraylist_remove_range(arraylist, index, 1);
 }
 
-int arraylist_index_of(ArrayList *arraylist, 
+int arraylist_index_of(ArrayList *arraylist,
                        ArrayListEqualFunc callback,
                        ArrayListValue data)
 {
@@ -182,7 +183,7 @@ int arraylist_index_of(ArrayList *arraylist,
 void arraylist_clear(ArrayList *arraylist)
 {
 	/* To clear the list, simply set the length to zero */
-	
+
 	arraylist->length = 0;
 }
 
@@ -223,9 +224,9 @@ static void arraylist_sort_internal(ArrayListValue *list_data,
 
 		if (compare_func(list_data[i], pivot) < 0) {
 
-			/* This should be in list 1.  Therefore it is in the wrong
-			 * position. Swap the data immediately following the last
-			 * item in list 1 with this data. */
+			/* This should be in list 1.  Therefore it is in the
+			 * wrong position. Swap the data immediately following
+			 * the last item in list 1 with this data. */
 
 			tmp = list_data[i];
 			list_data[i] = list_data[list1_length];
@@ -234,8 +235,8 @@ static void arraylist_sort_internal(ArrayListValue *list_data,
 			++list1_length;
 
 		} else {
-			/* This should be in list 2.  This is already in the right
-			 * position. */
+			/* This should be in list 2.  This is already in the
+			 * right position. */
 		}
 	}
 
@@ -244,16 +245,16 @@ static void arraylist_sort_internal(ArrayListValue *list_data,
 	list2_length = list_length - list1_length - 1;
 
 	/* list_data[0..list1_length-1] now contains all items which are
-	 * before the pivot. 
+	 * before the pivot.
 	 * list_data[list1_length..list_length-2] contains all items after
 	 * or equal to the pivot. */
 
-	/* Move the pivot into place, by swapping it with the item 
+	/* Move the pivot into place, by swapping it with the item
 	 * immediately following the end of list 1.  */
 
 	list_data[list_length-1] = list_data[list1_length];
 	list_data[list1_length] = pivot;
-	
+
 	/* Recursively sort the sublists. */
 
 	arraylist_sort_internal(list_data, list1_length, compare_func);
@@ -265,7 +266,8 @@ static void arraylist_sort_internal(ArrayListValue *list_data,
 void arraylist_sort(ArrayList *arraylist, ArrayListCompareFunc compare_func)
 {
 	/* Perform the recursive sort */
-	
-	arraylist_sort_internal(arraylist->data, arraylist->length, compare_func);
+
+	arraylist_sort_internal(arraylist->data, arraylist->length,
+	                        compare_func);
 }
 

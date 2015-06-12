@@ -2,19 +2,19 @@
 
 Copyright (c) 2005-2008, Simon Howard
 
-Permission to use, copy, modify, and/or distribute this software 
-for any purpose with or without fee is hereby granted, provided 
-that the above copyright notice and this permission notice appear 
-in all copies. 
+Permission to use, copy, modify, and/or distribute this software
+for any purpose with or without fee is hereby granted, provided
+that the above copyright notice and this permission notice appear
+in all copies.
 
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL 
-WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE 
-AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR 
-CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM 
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, 
-NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN      
-CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE. 
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL
+WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
  */
 
@@ -36,7 +36,8 @@ struct _BinaryHeap {
 	BinaryHeapCompareFunc compare_func;
 };
 
-static int binary_heap_cmp(BinaryHeap *heap, BinaryHeapValue data1, BinaryHeapValue data2)
+static int binary_heap_cmp(BinaryHeap *heap, BinaryHeapValue data1,
+                           BinaryHeapValue data2)
 {
 	if (heap->heap_type == BINARY_HEAP_TYPE_MIN) {
 		return heap->compare_func(data1, data2);
@@ -55,11 +56,11 @@ BinaryHeap *binary_heap_new(BinaryHeapType heap_type,
 	if (heap == NULL) {
 		return NULL;
 	}
-	
+
 	heap->heap_type = heap_type;
 	heap->num_values = 0;
 	heap->compare_func = compare_func;
-	
+
 	/* Initial size of 16 elements */
 
 	heap->alloced_size = 16;
@@ -69,7 +70,7 @@ BinaryHeap *binary_heap_new(BinaryHeapType heap_type,
 		free(heap);
 		return NULL;
 	}
-	
+
 	return heap;
 }
 
@@ -93,7 +94,8 @@ int binary_heap_insert(BinaryHeap *heap, BinaryHeapValue value)
 		/* Double the table size */
 
 		new_size = heap->alloced_size * 2;
-		new_values = realloc(heap->values, sizeof(BinaryHeapValue) * new_size);
+		new_values = realloc(heap->values,
+		                     sizeof(BinaryHeapValue) * new_size);
 
 		if (new_values == NULL) {
 			return 0;
@@ -119,7 +121,7 @@ int binary_heap_insert(BinaryHeap *heap, BinaryHeapValue value)
 		/* Compare the node with its parent */
 
 		if (binary_heap_cmp(heap, heap->values[parent], value) < 0) {
-			
+
 			/* Ordered correctly - insertion is complete */
 
 			break;
@@ -174,13 +176,13 @@ BinaryHeapValue binary_heap_pop(BinaryHeap *heap)
 	for (;;) {
 
 		/* Calculate the array indexes of the children of this node */
-		
+
 		child1 = index * 2 + 1;
 		child2 = index * 2 + 2;
 
 		if (child1 < heap->num_values
-		 && binary_heap_cmp(heap, 
-		                    new_value, 
+		 && binary_heap_cmp(heap,
+		                    new_value,
 		                    heap->values[child1]) > 0) {
 
 			/* Left child is less than the node.  We need to swap
@@ -194,20 +196,21 @@ BinaryHeapValue binary_heap_pop(BinaryHeap *heap)
 			} else {
 				next_index = child1;
 			}
-			
+
 		} else if (child2 < heap->num_values
-		        && binary_heap_cmp(heap, 
-		                           new_value, 
+		        && binary_heap_cmp(heap,
+		                           new_value,
 		                           heap->values[child2]) > 0) {
 
-			/* Right child is less than the node.  Swap with the 
+			/* Right child is less than the node.  Swap with the
 			 * right child. */
 
 			next_index = child2;
 
 		} else {
-			/* Node is less than both its children.  The heap condition
-			 * is satisfied.  We can stop percolating down. */
+			/* Node is less than both its children. The heap
+			 * condition is satisfied.  * We can stop percolating
+			 * down. */
 
 			heap->values[index] = new_value;
 			break;
